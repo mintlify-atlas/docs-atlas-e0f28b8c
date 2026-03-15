@@ -1,0 +1,112 @@
+---
+title: 'Firebase setup'
+description: 'Create and configure a Firebase project to enable authentication and Firestore for CCReward.'
+---
+
+CCReward uses Firebase for:
+
+- **Authentication** — Google Sign-In, Apple Sign-In, and anonymous sessions.
+- **Firestore** — storing user card lists and preferences.
+- **Analytics** — tracking sign-up, login, and error events.
+
+Follow the steps below to create a project and wire it into your local environment.
+
+<Warning>
+  Never commit your `.env.local` file to source control. It contains secret credentials. Ensure `.env.local` is listed in your `.gitignore` before your first commit.
+</Warning>
+
+## Steps
+
+<Steps>
+  <Step title="Create a Firebase project">
+    1. Go to the [Firebase Console](https://console.firebase.google.com/).
+    2. Click **Add project** and follow the setup wizard.
+    3. You can disable Google Analytics during setup if you prefer — CCReward will still work without it.
+  </Step>
+
+  <Step title="Register a web app and copy the config">
+    1. From the project overview, click the **web icon** (`</>`) to add a web app.
+    2. Give it a nickname, such as `ccreward-local`.
+    3. Click **Register app**.
+    4. Copy the `firebaseConfig` object shown. You will need these values in step 7.
+  </Step>
+
+  <Step title="Enable Google Sign-In">
+    1. In the Firebase Console, navigate to **Authentication** > **Sign-in method**.
+    2. Click **Google** and toggle it to **Enabled**.
+    3. Set a support email address, then click **Save**.
+    4. Copy the **Web client ID** from the Google provider settings — this is your `NEXT_PUBLIC_GOOGLE_CLIENT_ID`.
+
+    <Note>
+      If your Firebase project is new, you may be prompted to configure the OAuth consent screen in Google Cloud Console. Complete that step before returning here.
+    </Note>
+  </Step>
+
+  <Step title="Enable Anonymous authentication">
+    1. Still under **Authentication** > **Sign-in method**, click **Anonymous**.
+    2. Toggle it to **Enabled** and click **Save**.
+
+    Anonymous authentication allows users to calculate rewards without creating an account.
+  </Step>
+
+  <Step title="Create a Firestore database">
+    1. In the Firebase Console, go to **Firestore Database**.
+    2. Click **Create database**.
+    3. Select your preferred region (choose one geographically close to your users).
+    4. Start in **production mode**.
+  </Step>
+
+  <Step title="Configure Firestore security rules">
+    CCReward expects each authenticated user to read and write only their own documents. Apply the following rules in **Firestore Database** > **Rules**:
+
+    ```javascript firestore.rules
+    rules_version = '2';
+    service cloud.firestore {
+      match /databases/{database}/documents {
+        // Users can only access their own data
+        match /users/{userId}/{document=**} {
+          allow read, write: if request.auth != null && request.auth.uid == userId;
+        }
+      }
+    }
+    ```
+
+    Click **Publish** to apply the rules.
+  </Step>
+
+  <Step title="Copy config values into .env.local">
+    Create (or update) a `.env.local` file at the project root with the values from your Firebase web app config and the Google client ID from step 3:
+
+    ```bash .env.local
+    NEXT_PUBLIC_FIREBASE_API_KEY=AIzaSy...
+    NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+    NEXT_PUBLIC_FIREBASE_PROJECT_ID=your-project-id
+    NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
+    NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=123456789012
+    NEXT_PUBLIC_FIREBASE_APP_ID=1:123456789012:web:abc123def456
+    NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=G-XXXXXXXXXX
+    NEXT_PUBLIC_GOOGLE_CLIENT_ID=123456789012-xxxxxxxxxxxx.apps.googleusercontent.com
+    ```
+
+    See [Environment variables](/setup/environment-variables) for descriptions of all variables including the optional Cloudflare ones.
+  </Step>
+</Steps>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Authentication errors on sign-in">
+    - Confirm that both **Google** and **Anonymous** sign-in methods are enabled under **Authentication** > **Sign-in method**.
+    - Verify that `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN` matches the domain shown in the Firebase Console.
+    - If using Google Sign-In from `localhost`, ensure `localhost` is listed in the **Authorized domains** under **Authentication** > **Settings**.
+  </Accordion>
+
+  <Accordion title="Firestore permission denied errors">
+    - Check that your Firestore security rules have been published and are not still in the default locked-down state.
+    - Confirm the user is authenticated before attempting a Firestore read or write.
+  </Accordion>
+
+  <Accordion title="Missing environment variable warnings in the browser console">
+    The app's `envValidator.js` checks for all required variables on startup and logs a warning if any are absent. Double-check that your `.env.local` file is saved at the project root and that you restarted the dev server after editing it.
+  </Accordion>
+</AccordionGroup>

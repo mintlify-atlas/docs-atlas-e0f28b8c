@@ -1,0 +1,98 @@
+---
+title: 'Installation'
+description: 'Get CCReward running locally in a few steps. Requires Node.js 22+ and a Firebase project.'
+---
+
+## Prerequisites
+
+Before you begin, make sure your machine meets the following requirements:
+
+- **Node.js** >= 22.0.0
+- **npm** >= 10.0.0
+
+Check your versions:
+
+```bash
+node --version
+npm --version
+```
+
+## Setup steps
+
+<Steps>
+  <Step title="Clone the repository">
+    ```bash
+    git clone https://github.com/aashishvanand/ccreward-web.git
+    cd ccreward-web
+    ```
+  </Step>
+
+  <Step title="Install dependencies">
+    <CodeGroup>
+    ```bash npm
+    npm install
+    ```
+    </CodeGroup>
+
+    <Note>
+      The `postinstall` script automatically installs the optional `sharp` dependency used for image processing.
+    </Note>
+  </Step>
+
+  <Step title="Create your environment file">
+    Copy the template below into a new file named `.env.local` at the project root, then fill in your values:
+
+    ```bash .env.local
+    NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
+    NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+    NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+    NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+    NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+    NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
+    NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=G-XXXXXXXXXX
+    NEXT_PUBLIC_GOOGLE_CLIENT_ID=your_google_client_id.apps.googleusercontent.com
+    NEXT_PUBLIC_CLOUDFLARE_IMAGES_ACCOUNT_HASH=your_account_hash
+    NEXT_PUBLIC_API_BASE_URL=https://api.ccreward.app
+    # Optional: only needed if using a custom Cloudflare Images delivery domain
+    # NEXT_PUBLIC_CLOUDFLARE_IMAGES_DELIVERY_BASE_URL=https://imagedelivery.net/your_account_hash
+    ```
+
+    See [Environment variables](/setup/environment-variables) for a full description of each variable.
+  </Step>
+
+  <Step title="Configure Firebase">
+    CCReward requires a Firebase project for authentication and data storage. Follow the [Firebase setup guide](/setup/firebase-setup) to create your project and get the config values for `.env.local`.
+  </Step>
+
+  <Step title="Start the development server">
+    ```bash
+    npm run dev
+    ```
+
+    The app will be available at `http://localhost:3000`.
+  </Step>
+</Steps>
+
+## Production build
+
+The production build runs in three stages automatically:
+
+1. **`npm run fetch-data`** — fetches static card and bank data from the remote source and writes it to the local filesystem.
+2. **`npm run generate:sitemap`** — generates the sitemap from the fetched data.
+3. **`vinext build`** — compiles the Next.js application.
+
+All three stages are wired together in the `build` script:
+
+```bash
+npm run build
+```
+
+## Available scripts
+
+| Script | Description |
+| --- | --- |
+| `npm run dev` | Starts the local development server via `vinext dev`. |
+| `npm run build` | Fetches static data, generates sitemap, then builds for production. |
+| `npm run fetch-data` | Fetches static card/bank data from remote source only. |
+| `npm run generate:sitemap` | Generates the sitemap from fetched data only. |
+| `npm start` | Starts the production server after a build. |

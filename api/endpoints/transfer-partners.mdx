@@ -1,0 +1,134 @@
+---
+title: "Transfer partners"
+description: "Calculate how many points transfer to airline and hotel loyalty programs."
+---
+
+Returns all eligible transfer partners for a card and shows how a given points balance converts into each partner's currency.
+
+## Endpoint
+
+```
+POST /v4/transfer
+```
+
+## Authentication
+
+Requires a Firebase JWT Bearer token. See [Authentication](/api/authentication).
+
+<Note>
+This endpoint is **rate limited**. Free tier: 10 requests per day (feature: `transfers`). The response headers `X-Feature-Used` and `X-Feature-Remaining` reflect current usage.
+</Note>
+
+## Request body
+
+<ParamField body="bank" type="string" required>
+  Bank name (e.g., `"HDFC Bank"`).
+</ParamField>
+
+<ParamField body="card" type="string" required>
+  Card name (e.g., `"Infinia"`).
+</ParamField>
+
+<ParamField body="points" type="number" required>
+  Number of points to transfer. Must be a positive integer.
+</ParamField>
+
+<ParamField body="country" type="string">
+  Country code: `"in"` or `"sg"`. When omitted, the API uses the country derived from the request context.
+</ParamField>
+
+## Example request
+
+```bash
+curl --request POST \
+  "https://{API_BASE_URL}/v4/transfer" \
+  --header "Authorization: Bearer <token>" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "bank": "HDFC Bank",
+    "card": "Infinia",
+    "points": 10000,
+    "country": "in"
+  }'
+```
+
+## Example response
+
+```json
+{
+  "card_currency": "Infinia Reward Points",
+  "points_available": 10000,
+  "value_currency": "INR",
+  "total_partners": 3,
+  "airlines": [
+    {
+      "partner_name": "Air India Flying Returns",
+      "brand_name": "Air India",
+      "iata": "AI",
+      "partner_points_received": 10000,
+      "estimated_value": 1500.00,
+      "value_per_point": 0.15,
+      "transfer_time_display": "Instant"
+    }
+  ],
+  "hotels": [
+    {
+      "partner_name": "Marriott Bonvoy",
+      "brand_name": "Marriott",
+      "partner_points_received": 3333,
+      "estimated_value": 350.00,
+      "value_per_point": 0.035,
+      "transfer_time_display": "3-5 business days"
+    }
+  ]
+}
+```
+
+## Response fields
+
+<ResponseField name="card_currency" type="string">
+  The name of the card's points currency (e.g., `"Infinia Reward Points"`).
+</ResponseField>
+
+<ResponseField name="points_available" type="number">
+  The points balance used for the calculation (mirrors the request input).
+</ResponseField>
+
+<ResponseField name="value_currency" type="string">
+  ISO currency code used for estimated monetary values in the response.
+</ResponseField>
+
+<ResponseField name="total_partners" type="number">
+  Total number of transfer partners returned across airlines and hotels.
+</ResponseField>
+
+<ResponseField name="airlines" type="object[]">
+  Airline transfer partners.
+
+  <Expandable title="airline partner properties">
+    <ResponseField name="partner_name" type="string">Full loyalty program name.</ResponseField>
+    <ResponseField name="brand_name" type="string">Airline brand name.</ResponseField>
+    <ResponseField name="iata" type="string">Two-letter IATA airline code.</ResponseField>
+    <ResponseField name="partner_points_received" type="number">Points credited to the partner program after transfer.</ResponseField>
+    <ResponseField name="estimated_value" type="number">Estimated monetary value of the transferred points.</ResponseField>
+    <ResponseField name="value_per_point" type="number">Estimated value per point in `value_currency`.</ResponseField>
+    <ResponseField name="transfer_time_display" type="string">Human-readable transfer processing time (e.g., `"Instant"`, `"3-5 business days"`).</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="hotels" type="object[]">
+  Hotel transfer partners. Same structure as `airlines`, without the `iata` field.
+
+  <Expandable title="hotel partner properties">
+    <ResponseField name="partner_name" type="string">Full loyalty program name.</ResponseField>
+    <ResponseField name="brand_name" type="string">Hotel brand name.</ResponseField>
+    <ResponseField name="partner_points_received" type="number">Points credited to the partner program after transfer.</ResponseField>
+    <ResponseField name="estimated_value" type="number">Estimated monetary value of the transferred points.</ResponseField>
+    <ResponseField name="value_per_point" type="number">Estimated value per point in `value_currency`.</ResponseField>
+    <ResponseField name="transfer_time_display" type="string">Human-readable transfer processing time.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<Warning>
+If the selected card has no transferable points currency the API returns an error with code `NO_TRANSFER_CURRENCY`. Check `error.response.data.code` to handle this case gracefully.
+</Warning>

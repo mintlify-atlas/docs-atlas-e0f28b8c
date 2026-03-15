@@ -1,0 +1,102 @@
+---
+title: "Reporting missing banks or cards"
+description: "How to report a missing bank, credit card, or MCC (Merchant Category Code) to the CCReward team using the in-app form or GitHub Issues."
+---
+
+CCReward supports dozens of banks and hundreds of cards across India and Singapore, but new cards launch frequently. If you can't find your bank or card in the calculator, you can report it directly from the app.
+
+## The "Bank or Card Missing?" in-app feature
+
+CCReward includes a built-in reporting dialog accessible from the main calculator screen. You don't need a GitHub account — anyone can submit a report in under a minute.
+
+### What you can report
+
+The form lets you choose between two report types:
+
+<CardGroup cols={2}>
+  <Card title="Missing Bank or Card" icon="building-columns">
+    Report a bank or specific credit card product that isn't listed in the calculator's dropdown menus.
+  </Card>
+  <Card title="Missing MCC" icon="tag">
+    Report a Merchant Category Code (MCC) that is missing from the MCC lookup tool, along with the merchant name that uses it.
+  </Card>
+</CardGroup>
+
+### How to submit via the web app
+
+The form is a two-step stepper dialog:
+
+**Step 1 — Select report type**
+
+Choose one of the two options:
+- **Missing Bank or Card** — use this when the bank or a card product doesn't appear in the dropdown
+- **Missing MCC** — use this when a merchant's category code is not recognized
+
+**Step 2 — Enter details**
+
+Depending on your selection in step 1, you'll see different fields:
+
+<AccordionGroup>
+  <Accordion title="Fields for Missing Bank or Card">
+    | Field | Description |
+    |---|---|
+    | **Bank Name** | The full name of the bank (e.g., "HDFC Bank", "DBS") |
+    | **Card Name** | The exact product name as it appears on the card (e.g., "Infinia Metal", "Altitude Reserve") |
+  </Accordion>
+  <Accordion title="Fields for Missing MCC">
+    | Field | Description |
+    |---|---|
+    | **MCC** | The 4-digit Merchant Category Code (e.g., `5411` for grocery stores) |
+    | **Merchant Name** | The name of the merchant or business that uses this MCC |
+  </Accordion>
+</AccordionGroup>
+
+Once you've filled in the details, click **Submit**. You'll see a confirmation message when the report has been received.
+
+<Note>
+  Submissions go directly to the CCReward team via a backend form. You don't need to be signed in to submit a report.
+</Note>
+
+## Alternatively, open a GitHub Issue
+
+If you prefer to report via GitHub — or want to provide more context than the in-app form allows — open an issue at:
+
+[github.com/aashishvanand/ccreward-web/issues](https://github.com/aashishvanand/ccreward-web/issues)
+
+Use the title format: `[Missing Card] Bank Name – Card Name` or `[Missing MCC] XXXX – Merchant Name`
+
+## What information to include
+
+The more detail you provide, the faster the card or MCC can be added. Include:
+
+<AccordionGroup>
+  <Accordion title="For a missing bank or card">
+    - **Bank name** — full official name (e.g., "ICICI Bank", "Maybank")
+    - **Card product name** — as printed on the card or shown on the bank's website
+    - **Country** — India or Singapore
+    - **Card network** — Visa, Mastercard, American Express, or RuPay
+    - **Rewards type** — points, cashback, miles, or a combination
+    - **Link to the bank's official card page** — helps the team verify reward rates
+  </Accordion>
+  <Accordion title="For a missing MCC">
+    - **MCC** — the 4-digit code
+    - **Merchant name** — the specific business or merchant
+    - **Category description** — what type of business this merchant is (e.g., "Online grocery delivery")
+    - **Why this MCC matters** — which card's reward rate changes based on this MCC, if known
+  </Accordion>
+</AccordionGroup>
+
+<Tip>
+  You can often find a merchant's MCC by checking your bank statement, credit card app, or by searching the merchant name in public MCC databases.
+</Tip>
+
+## What happens after you report
+
+1. **Triage** — the CCReward team reviews submitted reports, usually within a few days.
+2. **Verification** — reward rates and card terms are cross-referenced against the bank's official published program.
+3. **Addition** — once verified, the card or MCC is added to the backend data and becomes available in the calculator.
+4. **No direct notification** — the in-app form does not send a reply to you. If you need to track status, open a GitHub Issue instead, where you can follow updates.
+
+<Warning>
+  Reward rates change frequently. Even after a card is added, the team relies on community reports to keep rates up to date. If you notice an incorrect calculation, use the **"Report Incorrect Reward Points"** option in the calculator results.
+</Warning>

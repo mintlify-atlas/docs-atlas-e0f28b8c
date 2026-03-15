@@ -1,0 +1,87 @@
+---
+title: 'Environment variables'
+description: 'Reference for all environment variables used by CCReward, including where to find each value.'
+---
+
+CCReward reads its configuration from a `.env.local` file in the project root. All variables prefixed with `NEXT_PUBLIC_` are embedded into the client-side bundle at build time and are visible in the browser.
+
+<Warning>
+  Never commit `.env.local` to source control. Add it to `.gitignore` before your first commit.
+</Warning>
+
+## Variables
+
+### Firebase
+
+These variables configure the Firebase SDK. You get all of them from the Firebase Console when you register a web app. See [Firebase setup](/setup/firebase-setup) for step-by-step instructions.
+
+| Variable | Required | Description |
+| --- | --- | --- |
+| `NEXT_PUBLIC_FIREBASE_API_KEY` | Required | Identifies your Firebase project to the Firebase API. Found in your web app's config object. |
+| `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN` | Required | The domain Firebase uses for OAuth redirects. Typically `<project-id>.firebaseapp.com`. |
+| `NEXT_PUBLIC_FIREBASE_PROJECT_ID` | Required | Your Firebase project's unique identifier. |
+| `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET` | Required | Cloud Storage bucket URL. Typically `<project-id>.appspot.com`. |
+| `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID` | Required | Numeric sender ID used by Firebase Cloud Messaging. |
+| `NEXT_PUBLIC_FIREBASE_APP_ID` | Required | Unique identifier for the registered web app within your Firebase project. |
+| `NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID` | Optional | Google Analytics measurement ID (e.g. `G-XXXXXXXXXX`). Required only if you enabled Analytics when creating the project. |
+
+### Google OAuth
+
+| Variable | Required | Description |
+| --- | --- | --- |
+| `NEXT_PUBLIC_GOOGLE_CLIENT_ID` | Required | OAuth 2.0 client ID for Google Sign-In. Found in the Google provider settings under **Authentication** > **Sign-in method** > **Google** in the Firebase Console. |
+
+<Note>
+  `NEXT_PUBLIC_GOOGLE_CLIENT_ID` is validated at startup by `envValidator.js` alongside the core Firebase variables. The app will log a warning and auth features will be unavailable if it is missing.
+</Note>
+
+### Cloudflare Images
+
+| Variable | Required | Description |
+| --- | --- | --- |
+| `NEXT_PUBLIC_CLOUDFLARE_IMAGES_ACCOUNT_HASH` | Required | Your Cloudflare Images account hash, used to construct card art image URLs. Found in the Cloudflare dashboard under **Images** > **Overview**. |
+| `NEXT_PUBLIC_CLOUDFLARE_IMAGES_DELIVERY_BASE_URL` | Optional | Override the default `imagedelivery.net` delivery domain with a custom domain. Omit this variable to use the default. |
+
+### API
+
+| Variable | Required | Description |
+| --- | --- | --- |
+| `NEXT_PUBLIC_API_BASE_URL` | Required | Base URL for the CCReward backend API (Cloudflare Workers). Use `https://api.ccreward.app` for production or your own worker URL for local development. |
+
+## Full .env.local example
+
+```bash .env.local
+# Firebase
+NEXT_PUBLIC_FIREBASE_API_KEY=AIzaSy_your_api_key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your-project-id
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=123456789012
+NEXT_PUBLIC_FIREBASE_APP_ID=1:123456789012:web:abc123def456
+NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=G-XXXXXXXXXX
+
+# Google OAuth
+NEXT_PUBLIC_GOOGLE_CLIENT_ID=123456789012-xxxxxxxxxxxx.apps.googleusercontent.com
+
+# Cloudflare Images
+NEXT_PUBLIC_CLOUDFLARE_IMAGES_ACCOUNT_HASH=your_account_hash
+# Optional — remove if using the default imagedelivery.net domain
+# NEXT_PUBLIC_CLOUDFLARE_IMAGES_DELIVERY_BASE_URL=https://imagedelivery.net/your_account_hash
+
+# API
+NEXT_PUBLIC_API_BASE_URL=https://api.ccreward.app
+```
+
+## Required vs. optional at a glance
+
+The following variables are validated at startup by `src/envValidator.js`. If any are missing, the app logs a warning and authentication features will not work:
+
+- `NEXT_PUBLIC_FIREBASE_API_KEY`
+- `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`
+- `NEXT_PUBLIC_FIREBASE_PROJECT_ID`
+- `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`
+- `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID`
+- `NEXT_PUBLIC_FIREBASE_APP_ID`
+- `NEXT_PUBLIC_GOOGLE_CLIENT_ID`
+
+All other variables are read at build time or runtime without a hard validation check, but the app will not function correctly without them.

@@ -1,0 +1,213 @@
+---
+title: "Best card"
+description: "Find and rank the best card across your portfolio for a given spend."
+---
+
+Two endpoints work together to find the best card: one to fetch per-card questions for the cards in your portfolio, and one to run the ranked comparison.
+
+---
+
+## Get best card questions
+
+Returns the dynamic questions for each card in the provided list. Use these answers in the `calculateBestCard` request.
+
+### Endpoint
+
+```
+POST /v4/bestCardQuestions
+```
+
+### Authentication
+
+Requires a Firebase JWT Bearer token. See [Authentication](/api/authentication).
+
+### Request body
+
+<ParamField body="cards" type="object[]" required>
+  Array of card objects to fetch questions for.
+
+  <Expandable title="card object properties">
+    <ParamField body="bank" type="string" required>
+      Bank name (e.g., `"HDFC Bank"`).
+    </ParamField>
+    <ParamField body="cardName" type="string" required>
+      Card name (e.g., `"Infinia"`).
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+### Example request
+
+```bash
+curl --request POST \
+  "https://{API_BASE_URL}/v4/bestCardQuestions" \
+  --header "Authorization: Bearer <token>" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "cards": [
+      { "bank": "HDFC Bank", "cardName": "Infinia" },
+      { "bank": "Axis Bank", "cardName": "Magnus" }
+    ]
+  }'
+```
+
+### Example response
+
+```json
+[
+  {
+    "bank": "HDFC Bank",
+    "cardName": "Infinia",
+    "key": "isInternational",
+    "label": "Is this an international transaction?",
+    "type": "boolean",
+    "applicableMCCs": []
+  },
+  {
+    "bank": "Axis Bank",
+    "cardName": "Magnus",
+    "key": "isInternational",
+    "label": "Is this an international transaction?",
+    "type": "boolean",
+    "applicableMCCs": []
+  }
+]
+```
+
+---
+
+## Calculate best card
+
+Ranks a set of cards by the rewards they would earn for a given transaction. Returns three separate rankings: by points/cashback earned, by monetary value, and by miles.
+
+### Endpoint
+
+```
+POST /v4/calculateBestCard
+```
+
+### Authentication
+
+Requires a Firebase JWT Bearer token.
+
+<Note>
+This endpoint is **rate limited**. Free tier: 10 requests per day (feature: `calculateBestCard`). The response headers `X-Feature-Used` and `X-Feature-Remaining` reflect current usage.
+</Note>
+
+### Request body
+
+<ParamField body="cards" type="object[]" required>
+  Cards to compare. Each object must have `bank` and `cardName` string fields.
+</ParamField>
+
+<ParamField body="amount" type="number" required>
+  Transaction amount as a positive number.
+</ParamField>
+
+<ParamField body="currency" type="string" required>
+  ISO 4217 currency code (e.g., `"INR"`, `"SGD"`). Returns `400 UNSUPPORTED_CURRENCY` or `503 EXCHANGE_RATES_UNAVAILABLE` when applicable.
+</ParamField>
+
+<ParamField body="country" type="string" required>
+  Country code: `"in"` or `"sg"`.
+</ParamField>
+
+<ParamField body="mcc" type="string">
+  Optional Merchant Category Code. Applies category-specific rates for each card.
+</ParamField>
+
+<ParamField body="answers" type="object">
+  Card-specific answers keyed by `"{bank} - {cardName}"`. Each value is an object mapping question keys to answers. Obtain question keys from `POST /v4/bestCardQuestions`.
+
+  ```json
+  {
+    "HDFC Bank - Infinia": { "isInternational": false },
+    "Axis Bank - Magnus": { "isInternational": false }
+  }
+  ```
+</ParamField>
+
+### Example request
+
+```bash
+curl --request POST \
+  "https://{API_BASE_URL}/v4/calculateBestCard" \
+  --header "Authorization: Bearer <token>" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "cards": [
+      { "bank": "HDFC Bank", "cardName": "Infinia" },
+      { "bank": "Axis Bank", "cardName": "Magnus" }
+    ],
+    "mcc": "5812",
+    "amount": 10000,
+    "currency": "INR",
+    "answers": {
+      "HDFC Bank - Infinia": { "isInternational": false },
+      "Axis Bank - Magnus": { "isInternational": false }
+    },
+    "country": "in"
+  }'
+```
+
+### Example response
+
+```json
+{
+  "rankingByPoints": [
+    {
+      "bank": "HDFC Bank",
+      "cardName": "Infinia",
+      "points": 330,
+      "rewardType": "points"
+    },
+    {
+      "bank": "Axis Bank",
+      "cardName": "Magnus",
+      "points": 250,
+      "rewardType": "points"
+    }
+  ],
+  "rankingByValue": [
+    {
+      "bank": "HDFC Bank",
+      "cardName": "Infinia",
+      "value": 16.5,
+      "currency": "INR"
+    }
+  ],
+  "rankingByMiles": [
+    {
+      "bank": "HDFC Bank",
+      "cardName": "Infinia",
+      "miles": 165
+    }
+  ],
+  "currencyConversion": null
+}
+```
+
+### Response fields
+
+<ResponseField name="rankingByPoints" type="object[]">
+  Cards sorted by points or cashback earned, highest first.
+
+  <Expandable title="item properties">
+    <ResponseField name="bank" type="string">Bank name.</ResponseField>
+    <ResponseField name="cardName" type="string">Card name.</ResponseField>
+    <ResponseField name="points" type="number">Points or cashback earned.</ResponseField>
+    <ResponseField name="rewardType" type="string">`"points"`, `"cashback"`, or `"miles"`.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="rankingByValue" type="object[]">
+  Cards sorted by estimated monetary value of the reward.
+</ResponseField>
+
+<ResponseField name="rankingByMiles" type="object[]">
+  Cards sorted by miles equivalent.
+</ResponseField>
+
+<ResponseField name="currencyConversion" type="object">
+  Currency conversion details when a non-native currency was supplied. `null` otherwise.
+</ResponseField>

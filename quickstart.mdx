@@ -1,80 +1,113 @@
 ---
 title: "Quickstart"
-description: "Start building awesome documentation in minutes"
+description: "Go from zero to your first reward calculation on ccreward.app in minutes."
 ---
 
-## Get started in three steps
+This guide walks you through opening CCReward, picking your region, signing in, running your first reward calculation, and saving a card to your collection.
 
-Get your documentation site running locally and make your first customization.
+<Steps>
+  <Step title="Open CCReward">
+    Navigate to [ccreward.app](https://ccreward.app) in any browser. The app works on desktop and mobile — no installation required.
 
-### Step 1: Set up your local environment
+    <Tip>
+      CCReward is also available as a native app. Download it from the [App Store](https://apps.apple.com/in/app/ccreward/id6736835206) or [Google Play](https://play.google.com/store/apps/details?id=app.ccreward) for the best mobile experience.
+    </Tip>
+  </Step>
 
-<AccordionGroup>
-  <Accordion icon="copy" title="Clone your docs locally">
-    During the onboarding process, you created a GitHub repository with your docs content if you didn't already have one. You can find a link to this repository in your [dashboard](https://dashboard.mintlify.com).
-    
-    To clone the repository locally so that you can make and preview changes to your docs, follow the [Cloning a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) guide in the GitHub docs.
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="Start the preview server">
-    1. Install the Mintlify CLI: `npm i -g mint`
-    2. Navigate to your docs directory and run: `mint dev`
-    3. Open `http://localhost:3000` to see your docs live!
-    
-    <Tip>Your preview updates automatically as you edit files.</Tip>
-  </Accordion>
-</AccordionGroup>
+  <Step title="Choose your region">
+    On your first visit, CCReward detects your location automatically. If you are browsing from **India** or **Singapore**, your region is set for you and you can move on to the next step.
 
-### Step 2: Deploy your changes
+    If your location cannot be detected, a **Region Selection** modal appears. Choose the region that matches the cards you hold:
 
-<AccordionGroup>
-  <Accordion icon="github" title="Install our GitHub app">
-    Install the Mintlify GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app).
-    
-    Our GitHub app automatically deploys your changes to your docs site, so you don't need to manage deployments yourself.
-</Accordion>
-<Accordion icon="palette" title="Update your site name and colors">
-    For a first change, let's update the name and colors of your docs site.
+    - **India (IN)** — covers AMEX, AU, Axis, BOB, Canara, DBS, Equitas, Federal, HDFC, HSBC, ICICI, IDBI, IDFCFirst, IndusInd, Kotak, OneCard, PNB, RBL, SBI, SBM, SC, Union, YesBank and more.
+    - **Singapore (SG)** — covers AMEX, BOC, CIMB, Citi, DBS, DCS, GXS, HSBC, Maribank, Maybank, OCBC, POSB, SC, TrustBank, UOB and more.
 
-    1. Open `docs.json` in your editor.
-    2. Change the `"name"` field to your project name.
-    3. Update the `"colors"` to match your brand.
-    4. Save and see your changes instantly at `http://localhost:3000`.
+    <Note>
+      You can change your region at any time from the header. Switching regions reloads the bank and card lists for the new country.
+    </Note>
+  </Step>
 
-    <Tip>Try changing the primary color to see an immediate difference!</Tip>
-  </Accordion>
-</AccordionGroup>
+  <Step title="Sign in">
+    CCReward supports two sign-in options:
 
-### Step 3: Go live
+    <Tabs>
+      <Tab title="Sign in with Google">
+        Click **Sign in with Google** and complete the Google OAuth flow in the popup. Your card collection and calculation history are saved to your account.
+      </Tab>
+      <Tab title="Sign in with Apple">
+        Click **Sign in with Apple** and authenticate with your Apple ID in the popup. Your data is tied to your Apple account.
+      </Tab>
+    </Tabs>
 
-<Accordion icon="rocket" title="Publish your docs">
-  1. Commit and push your changes.
-  2. Your docs will update and be live in moments!
-</Accordion>
+    <Note>
+      Sign-in is optional for the reward calculator. You can run calculations without an account, but saving cards to **My Cards** requires signing in.
+    </Note>
+  </Step>
 
-## Next steps
+  <Step title="Run your first reward calculation">
+    Open the **Reward Calculator** from the main navigation. Fill in the form fields in order:
 
-Now that you have your docs running, explore these key features:
+    1. **Select a bank** — choose the issuing bank for your card (e.g. HDFC, DBS).
+    2. **Select a card** — the card dropdown populates once a bank is chosen.
+    3. **Search MCC** *(optional)* — type a merchant name, category, or 4-digit MCC code to narrow the rewards to a specific spend category. Results show the MCC code, category name, and known merchants. Type at least 2 characters to trigger the search.
+    4. **Enter the amount** — type the transaction amount. Use the currency selector to switch between local and foreign currencies for international spend.
+    5. **Answer card-specific questions** *(if shown)* — some cards ask additional questions (e.g. card tier, spend milestone) to calculate the correct reward tier. These appear automatically after you select the card.
+
+    Click **Calculate** to see your results.
+
+    <Tip>
+      Not sure which MCC applies to a merchant? Search by the merchant's name — CCReward maps known merchants to their MCC codes so you don't need to look them up manually.
+    </Tip>
+
+    <Warning>
+      The **Calculate** button stays disabled until a bank, card, and a positive amount are all entered. If the button remains greyed out, check that the amount field is not zero or empty.
+    </Warning>
+  </Step>
+
+  <Step title="Understand the results">
+    After clicking Calculate, a results panel appears below the form:
+
+    - **Green panel** — your card earns rewards for this spend. The panel shows the reward text (e.g. "500 points" or "₹120 cashback" or "1.2 miles").
+    - **Red panel** — no rewards are earned for this combination of card and merchant category.
+
+    If your transaction is in a foreign currency, a currency conversion note is shown below the reward text, explaining the exchange rate used.
+
+    <Note>
+      Reward calculations use real-time exchange rates for foreign currency transactions. If exchange rates are temporarily unavailable, retry after a few minutes or switch to your local currency.
+    </Note>
+
+    After you receive results, two optional actions appear:
+
+    - **Bank or Card Missing?** — report a missing bank or card so it can be added.
+    - **Report Incorrect Reward** — flag a calculation that looks wrong, pre-filled with your current inputs.
+  </Step>
+
+  <Step title="Add a card to My Cards">
+    Once a calculation has been performed, an **Add to My Cards** button appears below the results (visible only when you are signed in). Click it to save the bank and card to your personal collection.
+
+    Your saved cards appear in the **My Cards** section, where you can manage your full card portfolio.
+
+    <Note>
+      If you are not signed in, the button reads **Sign In & Add to My Cards**. Clicking it takes you through the sign-in flow before adding the card.
+    </Note>
+  </Step>
+</Steps>
+
+---
+
+## What's next
 
 <CardGroup cols={2}>
-
-<Card title="Write Content" icon="pen-to-square" href="/essentials/markdown">
-  Learn MDX syntax and start writing your documentation.
-</Card>
-
-<Card title="Customize style" icon="palette" href="/essentials/settings">
-  Make your docs match your brand perfectly.
-</Card>
-
-<Card title="Add code examples" icon="square-code" href="/essentials/code">
-  Include syntax-highlighted code blocks.
-</Card>
-
-<Card title="API documentation" icon="code" href="/api-reference/introduction">
-  Auto-generate API docs from OpenAPI specs.
-</Card>
-
+  <Card title="My Cards" icon="credit-card" href="/features/my-cards">
+    Manage your full card portfolio and compare rewards across all your cards.
+  </Card>
+  <Card title="Best Card Calculator" icon="trophy" href="/features/best-card-finder">
+    Find out which card in your wallet earns the most for a given spend.
+  </Card>
+  <Card title="Transfer Partners" icon="arrows-right-left" href="/features/transfer-calculator">
+    Explore point transfer options to airline and hotel loyalty programmes.
+  </Card>
+  <Card title="MCC Lookup" icon="magnifying-glass" href="/features/mcc-lookup">
+    Search for merchant category codes to fine-tune your reward calculations.
+  </Card>
 </CardGroup>
-
-<Note>
-  **Need help?** See our [full documentation](https://mintlify.com/docs) or join our [community](https://mintlify.com/community).
-</Note>

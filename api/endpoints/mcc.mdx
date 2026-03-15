@@ -1,0 +1,66 @@
+---
+title: "MCC lookup"
+description: "Search for Merchant Category Codes by merchant name or category."
+---
+
+Returns a list of MCC objects matching the search query. Use the `mcc` field from results as the `mcc` parameter in reward calculation requests.
+
+## Endpoint
+
+```
+GET /v4/mcc
+```
+
+## Authentication
+
+Requires a Firebase JWT Bearer token. See [Authentication](/api/authentication).
+
+## Query parameters
+
+<ParamField query="search" type="string" required>
+  Merchant name or category to search for (e.g., `"amazon"`, `"restaurants"`, `"5812"`). Minimum 2 characters recommended for useful results.
+</ParamField>
+
+## Example request
+
+```bash
+curl "https://{API_BASE_URL}/v4/mcc?search=restaurants" \
+  --header "Authorization: Bearer <token>"
+```
+
+## Example response
+
+```json
+[
+  {
+    "mcc": "5812",
+    "name": "Eating Places and Restaurants",
+    "knownMerchants": ["Zomato", "Swiggy", "McDonald's"]
+  },
+  {
+    "mcc": "5814",
+    "name": "Fast Food Restaurants",
+    "knownMerchants": ["KFC", "Burger King"]
+  }
+]
+```
+
+## Response fields
+
+<ResponseField name="mcc" type="string">
+  The four-digit Merchant Category Code.
+</ResponseField>
+
+<ResponseField name="name" type="string">
+  Human-readable category name.
+</ResponseField>
+
+<ResponseField name="knownMerchants" type="string[]">
+  List of well-known merchants that typically fall under this MCC. May be empty.
+</ResponseField>
+
+## Request cancellation
+
+<Note>
+If a new search query is issued before the previous request completes, the earlier request is automatically cancelled. Only the result from the most recent query is returned. An empty array is returned for cancelled requests — this is not an error.
+</Note>

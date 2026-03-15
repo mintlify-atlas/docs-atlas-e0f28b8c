@@ -1,0 +1,100 @@
+---
+title: "Contributing to CCReward"
+description: "Learn how to contribute code, report bugs, and help improve CCReward — the credit card rewards optimizer for India and Singapore."
+---
+
+CCReward is an open-source project and we welcome contributions of all kinds. Whether you're fixing a bug, proposing a feature, or improving documentation, this guide walks you through how to get involved.
+
+## Ways to contribute
+
+<CardGroup cols={2}>
+  <Card title="Submit a pull request" icon="code-pull-request">
+    Fork the repo, make your changes, and open a PR against the main branch.
+  </Card>
+  <Card title="Report a bug" icon="bug">
+    Open a GitHub Issue with steps to reproduce, expected behavior, and screenshots if applicable.
+  </Card>
+  <Card title="Report missing cards" icon="credit-card">
+    Use the in-app "Bank or Card Missing?" feature or file an issue on GitHub.
+  </Card>
+  <Card title="Improve documentation" icon="book">
+    Found something unclear or missing in the docs? PRs to the docs repo are always appreciated.
+  </Card>
+</CardGroup>
+
+## Fork → Branch → PR workflow
+
+Follow this standard GitHub flow for all code contributions:
+
+1. **Fork** the repository at [github.com/aashishvanand/ccreward-web](https://github.com/aashishvanand/ccreward-web)
+2. **Create a feature branch** from `main`:
+   ```bash
+   git checkout -b feature/AmazingFeature
+   ```
+3. **Commit your changes** with a clear message:
+   ```bash
+   git commit -m 'Add some AmazingFeature'
+   ```
+4. **Push** your branch to your fork:
+   ```bash
+   git push origin feature/AmazingFeature
+   ```
+5. **Open a Pull Request** against the `main` branch of the upstream repository.
+
+<Tip>
+  Keep each PR focused on a single feature or fix. Smaller, well-scoped PRs are reviewed faster.
+</Tip>
+
+## Reporting bugs
+
+Open an issue at [github.com/aashishvanand/ccreward-web/issues](https://github.com/aashishvanand/ccreward-web/issues) and include:
+
+- A clear, descriptive title
+- Steps to reproduce the problem
+- Expected behavior vs. what actually happened
+- Screenshots or console output where helpful
+- Your browser/OS/app version
+
+<Note>
+  For security vulnerabilities, do **not** open a public issue. Email [security@ccreward.app](mailto:security@ccreward.app) instead. See the security policy for details.
+</Note>
+
+## Code style guidelines
+
+CCReward is built with **React**, **Next.js**, **Material UI (MUI)**, and **Firebase**. Please follow these conventions:
+
+- Use functional React components with hooks
+- Follow the existing file and folder structure under `src/features/`
+- Use MUI components for UI — do not introduce additional UI libraries
+- Keep components focused; split large components into smaller sub-components
+- Use the `'use client'` directive at the top of any client-side page file
+- Do not commit `.env.local` or any file containing Firebase credentials
+
+## Submitting a pull request
+
+Before opening your PR, make sure:
+
+<AccordionGroup>
+  <Accordion title="The app builds and runs locally">
+    Run `npm install` followed by `npm run dev` and confirm there are no build errors.
+  </Accordion>
+  <Accordion title="Your changes don't break existing functionality">
+    Manually test the calculator flow end-to-end: select a bank, pick a card, enter an amount, and verify the reward calculation.
+  </Accordion>
+  <Accordion title="Commit messages are descriptive">
+    Use the imperative mood in commit messages: "Add HDFC Infinia rewards logic" not "added stuff".
+  </Accordion>
+  <Accordion title="No sensitive data is included">
+    Ensure `.env.local` and any API keys are excluded from your commits.
+  </Accordion>
+</AccordionGroup>
+
+Once your PR is open, the maintainer will review it and may request changes before merging.
+
+## Reporting missing banks or cards
+
+If a bank or credit card is missing from the calculator, the fastest path is through the in-app reporting tool.
+
+<Card title="Reporting missing banks or cards" icon="flag" href="/contributing/reporting-missing-cards">
+  Learn how to use the "Bank or Card Missing?" form and what information to include.
+</Card>

@@ -1,0 +1,70 @@
+---
+title: "Supported banks — India"
+description: "All major Indian banks and credit cards supported by CCReward for MCC-based rewards optimization."
+---
+
+CCReward supports all major Indian banks and their credit cards, enabling you to calculate and compare rewards across a wide range of products — from entry-level cashback cards to premium travel cards.
+
+## Supported banks
+
+<CardGroup cols={4}>
+  <Card title="AMEX" />
+  <Card title="AU Bank" />
+  <Card title="Axis Bank" />
+  <Card title="Bank of Baroda (BOB)" />
+  <Card title="Canara Bank" />
+  <Card title="DBS Bank" />
+  <Card title="Equitas Bank" />
+  <Card title="Federal Bank" />
+  <Card title="HDFC Bank" />
+  <Card title="HSBC" />
+  <Card title="ICICI Bank" />
+  <Card title="IDBI Bank" />
+  <Card title="IDFC First Bank" />
+  <Card title="IndusInd Bank" />
+  <Card title="Kotak Mahindra Bank" />
+  <Card title="OneCard" />
+  <Card title="PNB" />
+  <Card title="RBL Bank" />
+  <Card title="SBI Card" />
+  <Card title="SBM Bank" />
+  <Card title="Standard Chartered (SC)" />
+  <Card title="Union Bank" />
+  <Card title="Yes Bank" />
+</CardGroup>
+
+## How bank and card data is fetched
+
+The list of supported banks for India is loaded dynamically from the CCReward API:
+
+```
+GET /v4/bank?country=in
+```
+
+Once a bank is selected, its available credit cards are fetched separately:
+
+```
+GET /v4/card?bank={bankName}&country=in
+```
+
+Both responses are cached in `localStorage` for 24 hours to minimise API calls on repeated visits.
+
+<Info>
+  The card list is always fetched dynamically. There is no static list embedded in the app — new cards added to the CCReward database become available to all users automatically.
+</Info>
+
+## MCC-based rewards and exclusion lists
+
+Indian credit cards calculate rewards based on the **Merchant Category Code (MCC)** of the transaction. Most banks maintain exclusion lists — specific MCC categories that earn reduced rewards or no rewards at all.
+
+<Note>
+  Common exclusions across Indian banks include fuel transactions, utility bill payments, government services, insurance premiums, EMI conversions, and wallet top-ups. The exact exclusion list varies by card. CCReward accounts for these exclusions in every calculation.
+</Note>
+
+When you select an MCC in the calculator, CCReward automatically checks the card's exclusion list and adjusts the reward output accordingly.
+
+## Missing bank or card?
+
+<Tip>
+  If you can't find your bank or credit card, use the **"Bank or Card Missing?"** feature inside the app to submit a request. The CCReward team reviews submissions and adds verified cards to the database.
+</Tip>

@@ -1,0 +1,256 @@
+---
+title: "User cards"
+description: "Manage the authenticated user's credit card portfolio."
+---
+
+All `/v4/user/cards` endpoints are user-scoped: each user can only read and modify their own cards. A valid Firebase JWT is required for every request.
+
+<Info>
+These endpoints operate on the authenticated user's portfolio. Anonymous users cannot access user card endpoints.
+</Info>
+
+---
+
+## Get user cards
+
+Returns all cards saved to the authenticated user's portfolio.
+
+### Endpoint
+
+```
+GET /v4/user/cards
+```
+
+### Authentication
+
+Requires a Firebase JWT Bearer token. See [Authentication](/api/authentication).
+
+### Query parameters
+
+<ParamField query="country" type="string">
+  Optional country filter: `in` or `sg`. When omitted, returns cards across all countries.
+</ParamField>
+
+### Example request
+
+```bash
+curl "https://{API_BASE_URL}/v4/user/cards?country=in" \
+  --header "Authorization: Bearer <token>"
+```
+
+### Example response
+
+```json
+[
+  {
+    "bank": "HDFC Bank",
+    "cardName": "Infinia",
+    "country": "in",
+    "addedAt": "2024-03-01T10:00:00.000Z"
+  },
+  {
+    "bank": "Axis Bank",
+    "cardName": "Magnus",
+    "country": "in",
+    "addedAt": "2024-03-05T14:30:00.000Z"
+  }
+]
+```
+
+---
+
+## Add a card
+
+Adds a card to the authenticated user's portfolio.
+
+### Endpoint
+
+```
+POST /v4/user/cards
+```
+
+### Authentication
+
+Requires a Firebase JWT Bearer token.
+
+### Request body
+
+<ParamField body="bank" type="string" required>
+  Bank name (e.g., `"HDFC Bank"`).
+</ParamField>
+
+<ParamField body="cardName" type="string" required>
+  Card name (e.g., `"Infinia"`).
+</ParamField>
+
+<ParamField body="country" type="string" required>
+  Country code: `"in"` or `"sg"`.
+</ParamField>
+
+<ParamField body="addedAt" type="string" required>
+  ISO 8601 timestamp of when the card was added (e.g., `"2024-03-01T10:00:00.000Z"`).
+</ParamField>
+
+### Example request
+
+```bash
+curl --request POST \
+  "https://{API_BASE_URL}/v4/user/cards" \
+  --header "Authorization: Bearer <token>" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "bank": "HDFC Bank",
+    "cardName": "Infinia",
+    "country": "in",
+    "addedAt": "2024-03-01T10:00:00.000Z"
+  }'
+```
+
+---
+
+## Update a card
+
+Updates an existing card in the user's portfolio. The card is matched by `bank`, `cardName`, and `country`; all other fields in the body are applied as updates.
+
+### Endpoint
+
+```
+PATCH /v4/user/cards
+```
+
+### Authentication
+
+Requires a Firebase JWT Bearer token.
+
+### Request body
+
+<ParamField body="bank" type="string" required>
+  Bank name of the card to update (used as identifier).
+</ParamField>
+
+<ParamField body="cardName" type="string" required>
+  Card name (used as identifier).
+</ParamField>
+
+<ParamField body="country" type="string" required>
+  Country code (used as identifier).
+</ParamField>
+
+### Example request
+
+```bash
+curl --request PATCH \
+  "https://{API_BASE_URL}/v4/user/cards" \
+  --header "Authorization: Bearer <token>" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "bank": "HDFC Bank",
+    "cardName": "Infinia",
+    "country": "in",
+    "addedAt": "2024-04-01T08:00:00.000Z"
+  }'
+```
+
+---
+
+## Remove a card
+
+Removes a card from the authenticated user's portfolio.
+
+### Endpoint
+
+```
+DELETE /v4/user/cards
+```
+
+### Authentication
+
+Requires a Firebase JWT Bearer token.
+
+### Request body
+
+<Note>
+`DELETE /v4/user/cards` sends the identifiers in the **request body**, not as query parameters.
+</Note>
+
+<ParamField body="bank" type="string" required>
+  Bank name of the card to remove.
+</ParamField>
+
+<ParamField body="cardName" type="string" required>
+  Card name to remove.
+</ParamField>
+
+<ParamField body="country" type="string" required>
+  Country code of the card to remove.
+</ParamField>
+
+### Example request
+
+```bash
+curl --request DELETE \
+  "https://{API_BASE_URL}/v4/user/cards" \
+  --header "Authorization: Bearer <token>" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "bank": "HDFC Bank",
+    "cardName": "Infinia",
+    "country": "in"
+  }'
+```
+
+---
+
+## Bulk sync cards
+
+Fully replaces the user's card portfolio with the provided list. This is a destructive operation — cards not included in the request body will be removed.
+
+<Warning>
+This is a full-replace operation. Any cards currently in the portfolio that are **not** present in the `cards` array will be deleted.
+</Warning>
+
+### Endpoint
+
+```
+PUT /v4/user/cards
+```
+
+### Authentication
+
+Requires a Firebase JWT Bearer token.
+
+### Request body
+
+<ParamField body="cards" type="object[]" required>
+  Complete list of cards to store. Each object should have `bank`, `cardName`, `country`, and `addedAt` fields matching the structure used by `POST /v4/user/cards`.
+</ParamField>
+
+<ParamField body="country" type="string">
+  Optional country scope for the sync operation.
+</ParamField>
+
+### Example request
+
+```bash
+curl --request PUT \
+  "https://{API_BASE_URL}/v4/user/cards" \
+  --header "Authorization: Bearer <token>" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "cards": [
+      {
+        "bank": "HDFC Bank",
+        "cardName": "Infinia",
+        "country": "in",
+        "addedAt": "2024-03-01T10:00:00.000Z"
+      },
+      {
+        "bank": "Axis Bank",
+        "cardName": "Magnus",
+        "country": "in",
+        "addedAt": "2024-03-05T14:30:00.000Z"
+      }
+    ],
+    "country": "in"
+  }'
+```

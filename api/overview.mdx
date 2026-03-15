@@ -1,0 +1,83 @@
+---
+title: "API overview"
+description: "Base URL, authentication, rate limiting, response format, and error codes for the CCReward API."
+---
+
+The CCReward API powers reward calculations, card lookups, and transfer partner estimates for India and Singapore. All endpoints are served over HTTPS and return JSON.
+
+## Base URL
+
+The base URL is configured via the `NEXT_PUBLIC_API_BASE_URL` environment variable. Every endpoint uses the `/v4/` prefix:
+
+```
+{NEXT_PUBLIC_API_BASE_URL}/v4/<endpoint>
+```
+
+Set this variable in your `.env` file or deployment environment before making requests.
+
+## Authentication
+
+All endpoints require a Firebase JWT passed as a Bearer token in the `Authorization` header:
+
+```
+Authorization: Bearer <firebase-id-token>
+```
+
+See [Authentication](/api/authentication) for details on obtaining and refreshing tokens.
+
+## Rate limiting
+
+Three features are independently rate-limited per user per day:
+
+| Feature | Header value | Default daily limit (free) |
+|---|---|---|
+| Reward calculator | `calculateRewards` | 10 |
+| Best card calculator | `calculateBestCard` | 10 |
+| Transfer partners | `transfers` | 10 |
+
+The backend returns usage headers on every response:
+
+| Header | Description |
+|---|---|
+| `X-Feature-Name` | The rate-limited feature that was used |
+| `X-Feature-Used` | Number of times used today |
+| `X-Feature-Remaining` | Remaining uses for today |
+
+When the daily limit is exhausted the API returns `429 Too Many Requests`.
+
+<Note>
+Authenticated users and anonymous users share the same free-tier limits on the web app. The backend `429` response is the authoritative source of truth for quota enforcement.
+</Note>
+
+## Response format
+
+All successful responses are JSON. Error responses include a machine-readable `code` and a human-readable `error` or `message` field:
+
+```json
+{
+  "code": "UNSUPPORTED_CURRENCY",
+  "error": "Unsupported currency. Please select a valid currency and try again."
+}
+```
+
+## Error codes
+
+| HTTP status | Code | Meaning |
+|---|---|---|
+| `400` | `UNSUPPORTED_CURRENCY` | The `currency` value is not supported for the requested calculation. |
+| `429` | — | Daily rate limit reached for the feature. Check `X-Feature-Remaining`. |
+| `503` | `EXCHANGE_RATES_UNAVAILABLE` | Live exchange rates could not be fetched. Retry later or use a local currency. |
+
+## Caching
+
+Bank and card list responses are cached client-side in `localStorage` for **24 hours**. The cache key is scoped by region (e.g., `banks_in`, `cards_in_HDFC Bank`). Subsequent requests within the window return the cached value without hitting the network.
+
+Calculation endpoints (`/v4/calculateRewards`, `/v4/calculateBestCard`, `/v4/transfer`) are never cached.
+
+## Bot protection
+
+POST requests attach a Cloudflare Turnstile token in the `X-Turnstile-Token` header automatically. This is handled by the client SDK and does not require manual configuration.
+
+## Retries
+
+The SDK retries failed requests up to **3 times** with exponential back-off for network errors and connection timeouts (10-second timeout per attempt).

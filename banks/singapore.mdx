@@ -1,0 +1,66 @@
+---
+title: "Supported banks — Singapore"
+description: "All major Singapore banks and credit cards supported by CCReward for miles, cashback, and points optimization."
+---
+
+CCReward supports major Singapore banks and their credit cards, helping you maximise miles, cashback, and reward points across a wide selection of personal and premium cards.
+
+## Supported banks
+
+<CardGroup cols={4}>
+  <Card title="AMEX" />
+  <Card title="Bank of China (BOC)" />
+  <Card title="CIMB" />
+  <Card title="Citibank" />
+  <Card title="DBS Bank" />
+  <Card title="Diners Club (DCS)" />
+  <Card title="GXS Bank" />
+  <Card title="HSBC" />
+  <Card title="Maybank" />
+  <Card title="Maribank" />
+  <Card title="OCBC" />
+  <Card title="POSB" />
+  <Card title="Standard Chartered (SC)" />
+  <Card title="Trust Bank" />
+  <Card title="UOB" />
+</CardGroup>
+
+## How bank and card data is fetched
+
+The list of supported banks for Singapore is loaded dynamically from the CCReward API:
+
+```
+GET /v4/bank?country=sg
+```
+
+Once a bank is selected, its available credit cards are fetched separately:
+
+```
+GET /v4/card?bank={bankName}&country=sg
+```
+
+Both responses are cached in `localStorage` for 24 hours to minimise API calls on repeated visits.
+
+<Info>
+  The card list is always fetched dynamically. There is no static list embedded in the app — new cards added to the CCReward database become available to all users automatically.
+</Info>
+
+## Singapore reward types
+
+Singapore credit cards offer several reward structures. Many premium and travel cards in Singapore are **miles-focused**, where spend earns air miles that can be transferred to frequent flyer programmes.
+
+<Note>
+  Singapore cards commonly offer one of three reward types:
+
+  - **Miles** — earned as air miles, often transferable to KrisFlyer, Asia Miles, or other FFPs. Popular on DBS Altitude, OCBC 90°N, Citi PremierMiles, and UOB PRVI Miles.
+  - **Points** — proprietary bank points (e.g. DBS Points, OCBC$, UNI$) redeemable for vouchers, miles transfers, or merchandise.
+  - **Cashback** — a percentage of spend returned as statement credit or cash. Common on OCBC 365, DBS Live Fresh, and Maybank Family & Friends.
+
+  CCReward calculates the optimal card for each spend category regardless of reward type.
+</Note>
+
+## Missing bank or card?
+
+<Tip>
+  If you can't find your bank or credit card, use the **"Bank or Card Missing?"** feature inside the app to submit a request. The CCReward team reviews submissions and adds verified cards to the database.
+</Tip>

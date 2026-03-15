@@ -1,0 +1,78 @@
+---
+title: Introduction
+description: Welcome to CCReward — the smart credit card rewards calculator for India and Singapore
+---
+
+# CCReward Documentation
+
+CCReward helps you figure out which credit card gives you the best rewards for every purchase. Stop leaving money on the table — compare rewards across dozens of banks and cards in seconds.
+
+<CardGroup cols={2}>
+  <Card title="Quick Start" icon="rocket" href="/quickstart">
+    Get up and running with CCReward in under 2 minutes
+  </Card>
+  <Card title="Reward Calculator" icon="calculator" href="/features/reward-calculator">
+    Calculate exact rewards for any card and spend amount
+  </Card>
+  <Card title="Best Card Finder" icon="trophy" href="/features/best-card-finder">
+    Discover which card gives you the most rewards for your spending
+  </Card>
+  <Card title="API Reference" icon="code" href="/api/overview">
+    Integrate CCReward data into your own applications
+  </Card>
+</CardGroup>
+
+## What is CCReward?
+
+CCReward is a comprehensive credit card rewards optimization tool designed for users in **India** and **Singapore**. It solves the common problem of figuring out which credit card to swipe for maximum rewards on any given purchase.
+
+The app supports over 40 banks across both countries and hundreds of individual credit cards, with real-time reward calculations based on Merchant Category Codes (MCCs).
+
+## Key features
+
+<CardGroup cols={2}>
+  <Card title="Reward Calculator" icon="coins">
+    Enter a spend amount and merchant category to instantly see how many points, miles, or cashback you earn on any card
+  </Card>
+  <Card title="Best Card Finder" icon="star">
+    Select multiple cards from your wallet and find which one maximizes rewards for a specific purchase
+  </Card>
+  <Card title="Transfer Calculator" icon="arrow-right-arrow-left">
+    Calculate how many airline miles or hotel points you get when transferring credit card points to loyalty programs
+  </Card>
+  <Card title="MCC Lookup" icon="magnifying-glass">
+    Search for Merchant Category Codes by merchant name or category to understand how your purchases are classified
+  </Card>
+  <Card title="My Cards" icon="credit-card">
+    Build your personal card portfolio and always calculate rewards based on cards you actually own
+  </Card>
+  <Card title="Multi-region" icon="globe">
+    Full support for Indian banks (HDFC, ICICI, SBI, Axis, and more) and Singapore banks (DBS, OCBC, UOB, and more)
+  </Card>
+</CardGroup>
+
+## Supported regions
+
+<CardGroup cols={2}>
+  <Card title="India" icon="flag" href="/banks/india">
+    23+ banks including HDFC, ICICI, SBI, Axis, Kotak, AMEX, and more
+  </Card>
+  <Card title="Singapore" icon="flag" href="/banks/singapore">
+    15+ banks including DBS, OCBC, UOB, Citi, HSBC, Maybank, and more
+  </Card>
+</CardGroup>
+
+## Mobile apps
+
+CCReward is available on iOS and Android in addition to the web app at [ccreward.app](https://ccreward.app).
+
+- **iOS**: Available on the [App Store](https://apps.apple.com/in/app/ccreward/id6736835206)
+- **Android**: Available on [Google Play](https://play.google.com/store/apps/details?id=app.ccreward)
+
+## Self-hosting
+
+CCReward is open source for non-commercial use. If you want to run your own instance, see the [installation guide](/setup/installation) for setup instructions including Firebase configuration and environment variables.
+
+<Note>
+  The live app at [ccreward.app](https://ccreward.app) is always up to date with the latest bank and card data. Self-hosted instances require manually fetching static data via `npm run fetch-data`.
+</Note>

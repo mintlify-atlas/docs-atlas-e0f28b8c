@@ -1,0 +1,71 @@
+---
+title: MCC Lookup
+description: Search for Merchant Category Codes by merchant name or category to understand how your credit card rewards will apply.
+---
+
+The MCC Lookup tool lets you find the 4-digit Merchant Category Code (MCC) for any merchant or business type. Knowing the MCC of a transaction helps you predict which reward rate your credit card will apply — before you swipe.
+
+## What are MCCs?
+
+A **Merchant Category Code (MCC)** is a 4-digit number assigned by card networks (Visa, Mastercard, Amex, RuPay) to classify every business by the type of goods or services it sells. When you make a purchase, the merchant's MCC is included in the transaction data sent to your bank.
+
+Banks use MCCs to:
+
+- Apply **bonus reward rates** for preferred categories (e.g. 5x on dining, 3x on travel)
+- **Exclude transactions** from earning rewards (e.g. rent, fuel surcharges, wallet loads)
+- Calculate **transaction-level fees** such as foreign transaction or convenience charges
+
+The same merchant can have a different MCC depending on whether you buy in-store vs. online, or whether they operate as a marketplace vs. a direct seller.
+
+## How to use it
+
+Type a merchant name, category keyword, or known merchant name in the search box. Results appear automatically after a short debounce delay — no need to press Enter.
+
+Each result card shows:
+
+- **MCC code** — the 4-digit code
+- **Merchant name / category** — the official category description
+- **Industry** — the broader industry group (e.g. Retail, Transportation, Amusement)
+- **Category** — the sub-category within the industry
+- **Similar merchants** — known merchants that typically fall under this MCC
+
+<Tip>
+  Copy the MCC code and paste it into the [Reward Calculator](/features/reward-calculator) to get an exact reward calculation for that category.
+</Tip>
+
+## How MCC affects reward rates
+
+Most credit cards have a tiered reward structure based on MCCs:
+
+<AccordionGroup>
+  <Accordion title="Dining and restaurants">
+    MCCs in the dining group (e.g. 5812 – Eating Places & Restaurants, 5814 – Fast Food Restaurants) commonly attract **bonus reward rates** on premium dining cards. Cards like HDFC Infinia and Amex Platinum charge offer elevated points for these codes.
+  </Accordion>
+  <Accordion title="Travel (airlines, hotels, taxis)">
+    Airlines (MCC 3000–3299), hotels (MCC 3501–3999), car rentals (MCC 3351–3441), and ride-hailing apps fall into travel categories. Travel credit cards typically earn 2x–5x on these MCCs.
+  </Accordion>
+  <Accordion title="Grocery and supermarkets">
+    Grocery stores (MCC 5411), supermarkets, and warehouse clubs (MCC 5300) are popular bonus categories on everyday cashback cards. Note that some large-format retailers may not code as groceries even if they sell groceries.
+  </Accordion>
+  <Accordion title="Fuel and petrol stations">
+    Fuel stations (MCC 5541, 5542) often attract a fuel surcharge waiver benefit rather than bonus reward points. Check your card's terms — many cards exclude fuel from rewards or cap the benefit.
+  </Accordion>
+  <Accordion title="Online shopping and marketplaces">
+    Online transactions may code under the merchant's own MCC rather than a generic online shopping code. For example, Amazon transactions may code as general merchandise (MCC 5999) or electronics (MCC 5732), depending on the seller.
+  </Accordion>
+  <Accordion title="Excluded categories">
+    Several MCCs are commonly **excluded from earning rewards** across most Indian and Singapore cards:
+
+    - Rent payments (MCC 6513)
+    - Wallet loads and prepaid cards (MCC 6540)
+    - Fuel surcharges (varies)
+    - Government services (MCC 9311, 9399)
+    - Insurance premiums (MCC 6300, 6311)
+
+    Always check your card's most-excluded-categories list, as these can change.
+  </Accordion>
+</AccordionGroup>
+
+## Reporting missing or incorrect data
+
+If you cannot find a merchant, or if the MCC shown appears incorrect, use the **Report Issue** button at the bottom of the page to submit a correction. Community reports help keep the database accurate for all users.

@@ -1,0 +1,76 @@
+---
+title: "Authentication"
+description: "How to authenticate with the CCReward API using Firebase JWT tokens."
+---
+
+Every CCReward API endpoint requires a valid Firebase ID token passed as a Bearer token in the `Authorization` header.
+
+## Authorization header
+
+```
+Authorization: Bearer <firebase-id-token>
+```
+
+Example:
+
+```bash
+curl https://{API_BASE_URL}/v4/bank?country=in \
+  --header "Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6..."
+```
+
+## Getting a token
+
+CCReward uses Firebase Authentication. Tokens are obtained by signing in via the Firebase Auth SDK.
+
+<Steps>
+  <Step title="Initialize Firebase Auth">
+    Set up the Firebase SDK in your project with your app's Firebase config. CCReward supports Google sign-in and anonymous sign-in.
+  </Step>
+  <Step title="Sign in">
+    Call `signInWithPopup` (Google) or `signInAnonymously` depending on the desired auth flow.
+
+    ```javascript
+    import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+
+    const auth = getAuth();
+    await signInWithPopup(auth, new GoogleAuthProvider());
+    ```
+  </Step>
+  <Step title="Retrieve the ID token">
+    Call `getIdToken` on the signed-in user to obtain a JWT:
+
+    ```javascript
+    const token = await getIdToken(auth.currentUser, /* forceRefresh */ true);
+    // Pass this token in the Authorization header
+    ```
+  </Step>
+</Steps>
+
+## Token refresh
+
+Firebase ID tokens expire after **1 hour**. The CCReward client SDK refreshes tokens automatically before each request:
+
+- If the cached token is not expired it is reused.
+- If the token is expired `getIdToken(user, true)` is called to force a refresh.
+- Concurrent requests share a single refresh promise to avoid duplicate network calls.
+
+<Note>
+Tokens are managed in memory by the Firebase Auth SDK (backed by IndexedDB). They are never stored in `localStorage` to prevent XSS exposure.
+</Note>
+
+## Anonymous vs. authenticated users
+
+| | Anonymous | Authenticated (Google) |
+|---|---|---|
+| Requires sign-in | No — Firebase creates a temporary account | Yes |
+| Daily rate limits | Same free-tier limits | Same free-tier limits |
+| User cards (`/v4/user/cards`) | Not accessible | Accessible |
+| Persists across sessions | No | Yes |
+
+<Tip>
+Sign in with Google to save your card portfolio and access it across devices via `/v4/user/cards`.
+</Tip>
+
+## Error responses
+
+If the token is missing or invalid the API returns `401 Unauthorized`. If no user is signed in at all the SDK will throw `No user is currently signed in` before the request is dispatched.

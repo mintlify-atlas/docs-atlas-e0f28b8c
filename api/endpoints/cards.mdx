@@ -1,0 +1,160 @@
+---
+title: "List cards"
+description: "Retrieve cards for a bank, fetch card details, and get card goals."
+---
+
+Three endpoints let you browse cards, inspect individual card configurations, and retrieve goal/target data.
+
+---
+
+## List cards for a bank
+
+Returns an array of card names available for the specified bank and country.
+
+### Endpoint
+
+```
+GET /v4/card
+```
+
+### Authentication
+
+Requires a Firebase JWT Bearer token. See [Authentication](/api/authentication).
+
+### Query parameters
+
+<ParamField query="bank" type="string" required>
+  Bank name as returned by [GET /v4/bank](/api/endpoints/banks). Must be URL-encoded.
+</ParamField>
+
+<ParamField query="country" type="string" required>
+  Country code: `in` (India) or `sg` (Singapore).
+</ParamField>
+
+### Example request
+
+```bash
+curl "https://{API_BASE_URL}/v4/card?bank=HDFC%20Bank&country=in" \
+  --header "Authorization: Bearer <token>"
+```
+
+### Example response
+
+```json
+[
+  "Diners Club Black",
+  "Infinia",
+  "Millennia",
+  "Regalia"
+]
+```
+
+<Note>
+Card lists are cached client-side for **24 hours** per `{country}_{bank}` combination.
+</Note>
+
+---
+
+## Get card details
+
+Returns full configuration details for a single card, including reward rates, categories, and metadata.
+
+### Endpoint
+
+```
+GET /v4/card/detail
+```
+
+### Authentication
+
+Requires a Firebase JWT Bearer token.
+
+### Query parameters
+
+<ParamField query="bank" type="string" required>
+  Bank name. Must be URL-encoded.
+</ParamField>
+
+<ParamField query="card" type="string" required>
+  Card name as returned by `GET /v4/card`. Must be URL-encoded.
+</ParamField>
+
+<ParamField query="country" type="string" required>
+  Country code: `in` or `sg`.
+</ParamField>
+
+### Example request
+
+```bash
+curl "https://{API_BASE_URL}/v4/card/detail?bank=HDFC%20Bank&card=Infinia&country=in" \
+  --header "Authorization: Bearer <token>"
+```
+
+### Example response
+
+```json
+{
+  "bank": "HDFC Bank",
+  "card": "Infinia",
+  "country": "in",
+  "rewardType": "points",
+  "baseRate": 3.3,
+  "categories": [
+    {
+      "mcc": "5812",
+      "name": "Restaurants",
+      "rate": 5
+    }
+  ]
+}
+```
+
+---
+
+## Get card goals
+
+Returns spend targets and milestone rewards configured for a card.
+
+### Endpoint
+
+```
+GET /v4/goals
+```
+
+### Authentication
+
+Requires a Firebase JWT Bearer token.
+
+### Query parameters
+
+<ParamField query="bank" type="string" required>
+  Bank name. Must be URL-encoded.
+</ParamField>
+
+<ParamField query="card" type="string" required>
+  Card name. Must be URL-encoded.
+</ParamField>
+
+<ParamField query="country" type="string" required>
+  Country code: `in` or `sg`.
+</ParamField>
+
+### Example request
+
+```bash
+curl "https://{API_BASE_URL}/v4/goals?bank=HDFC%20Bank&card=Infinia&country=in" \
+  --header "Authorization: Bearer <token>"
+```
+
+### Example response
+
+```json
+[
+  {
+    "goalName": "Annual spend milestone",
+    "targetAmount": 800000,
+    "currency": "INR",
+    "reward": "1000 bonus points"
+  }
+]
+```

@@ -1,0 +1,47 @@
+---
+title: "List banks"
+description: "Retrieve all supported banks for a given country."
+---
+
+Returns an array of bank names available in the specified country. Use the returned values as the `bank` parameter in subsequent card and calculation requests.
+
+## Endpoint
+
+```
+GET /v4/bank
+```
+
+## Authentication
+
+Requires a Firebase JWT Bearer token. See [Authentication](/api/authentication).
+
+## Query parameters
+
+<ParamField query="country" type="string" required>
+  Country code. Accepted values: `in` (India) or `sg` (Singapore).
+</ParamField>
+
+## Example request
+
+```bash
+curl "https://{API_BASE_URL}/v4/bank?country=in" \
+  --header "Authorization: Bearer <token>"
+```
+
+## Example response
+
+```json
+[
+  "Axis Bank",
+  "HDFC Bank",
+  "ICICI Bank",
+  "SBI Card",
+  "Standard Chartered"
+]
+```
+
+The response is a JSON array of bank name strings.
+
+<Note>
+Bank list responses are cached in the browser for **24 hours** per country. The cache key is `banks_{country}` (e.g., `banks_in`). Clearing `localStorage` forces a fresh fetch.
+</Note>

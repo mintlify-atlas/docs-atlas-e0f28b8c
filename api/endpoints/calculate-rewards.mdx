@@ -1,0 +1,173 @@
+---
+title: "Calculate rewards"
+description: "Calculate credit card reward points or cashback for a specific transaction."
+---
+
+Two endpoints support reward calculation: one to fetch card-specific input questions, and one to run the calculation.
+
+---
+
+## Get card questions
+
+Returns the dynamic questions that must be answered for a card to calculate accurate rewards (e.g., whether a transaction is on an EMI, whether it is an international spend).
+
+### Endpoint
+
+```
+GET /v4/cardQuestions
+```
+
+### Authentication
+
+Requires a Firebase JWT Bearer token. See [Authentication](/api/authentication).
+
+### Query parameters
+
+<ParamField query="bank" type="string" required>
+  Bank name. Must be URL-encoded.
+</ParamField>
+
+<ParamField query="card" type="string" required>
+  Card name. Must be URL-encoded.
+</ParamField>
+
+### Example request
+
+```bash
+curl "https://{API_BASE_URL}/v4/cardQuestions?bank=HDFC%20Bank&card=Infinia" \
+  --header "Authorization: Bearer <token>"
+```
+
+### Example response
+
+```json
+[
+  {
+    "key": "isInternational",
+    "label": "Is this an international transaction?",
+    "type": "boolean",
+    "applicableMCCs": []
+  },
+  {
+    "key": "isEmi",
+    "label": "Is this an EMI transaction?",
+    "type": "boolean",
+    "applicableMCCs": []
+  }
+]
+```
+
+---
+
+## Calculate rewards
+
+Calculates the reward points or cashback earned for a single transaction on a specific card.
+
+### Endpoint
+
+```
+POST /v4/calculateRewards
+```
+
+### Authentication
+
+Requires a Firebase JWT Bearer token.
+
+<Note>
+This endpoint is **rate limited**. Free tier: 10 requests per day (feature: `calculateRewards`). The response headers `X-Feature-Used` and `X-Feature-Remaining` reflect current usage.
+</Note>
+
+### Request body
+
+<ParamField body="bank" type="string" required>
+  Bank name (e.g., `"HDFC Bank"`).
+</ParamField>
+
+<ParamField body="card" type="string" required>
+  Card name (e.g., `"Infinia"`).
+</ParamField>
+
+<ParamField body="amount" type="number" required>
+  Transaction amount as a positive number.
+</ParamField>
+
+<ParamField body="currency" type="string" required>
+  ISO 4217 currency code (e.g., `"INR"`, `"SGD"`, `"USD"`). The API converts non-native currencies using live exchange rates. Returns `400 UNSUPPORTED_CURRENCY` if the currency is not supported, or `503 EXCHANGE_RATES_UNAVAILABLE` if rates cannot be fetched.
+</ParamField>
+
+<ParamField body="country" type="string" required>
+  Country code: `"in"` or `"sg"`.
+</ParamField>
+
+<ParamField body="mcc" type="string">
+  Merchant Category Code (optional). When provided, the API applies category-specific reward rates. Obtain MCC values from [GET /v4/mcc](/api/endpoints/mcc).
+</ParamField>
+
+<ParamField body="answers" type="object">
+  Answers to the card-specific questions returned by `GET /v4/cardQuestions`. Each key maps to a question `key` and the value is the user's answer. Omit or pass an empty object if there are no questions.
+</ParamField>
+
+### Example request
+
+```bash
+curl --request POST \
+  "https://{API_BASE_URL}/v4/calculateRewards" \
+  --header "Authorization: Bearer <token>" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "bank": "HDFC Bank",
+    "card": "Infinia",
+    "mcc": "5812",
+    "amount": 5000,
+    "currency": "INR",
+    "answers": {
+      "isInternational": false,
+      "isEmi": false
+    },
+    "country": "in"
+  }'
+```
+
+### Example response
+
+```json
+{
+  "points": 150,
+  "rewardType": "points",
+  "description": "3 points per ₹100 spent",
+  "category": "Restaurants",
+  "mcc": "5812",
+  "effectiveRate": 3,
+  "currencyConversion": null
+}
+```
+
+### Response fields
+
+<ResponseField name="points" type="number">
+  Reward points or cashback amount earned.
+</ResponseField>
+
+<ResponseField name="rewardType" type="string">
+  The type of reward: `"points"`, `"cashback"`, or `"miles"`.
+</ResponseField>
+
+<ResponseField name="description" type="string">
+  Human-readable summary of the reward rate applied.
+</ResponseField>
+
+<ResponseField name="category" type="string">
+  Spend category matched for the MCC, if applicable.
+</ResponseField>
+
+<ResponseField name="mcc" type="string">
+  The MCC used for the calculation.
+</ResponseField>
+
+<ResponseField name="effectiveRate" type="number">
+  The reward rate applied (points per unit spend).
+</ResponseField>
+
+<ResponseField name="currencyConversion" type="object">
+  Present when the input currency differs from the card's native currency. Contains the exchange rate and converted amount. `null` when no conversion was needed.
+</ResponseField>
