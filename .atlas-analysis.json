@@ -1,0 +1,112 @@
+{
+  "projectType": "saas",
+  "projectName": "CCReward",
+  "projectDescription": "A consumer-facing web app that helps users in India and Singapore calculate, compare, and optimize credit card rewards across dozens of banks and cards.",
+  "theme": "almond",
+  "primaryColor": "#1976D2",
+  "lightColor": "#42A5F5",
+  "darkColor": "#0D47A1",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": ["introduction", "quickstart"]
+          },
+          {
+            "group": "Core Features",
+            "pages": [
+              "features/reward-calculator",
+              "features/best-card-finder",
+              "features/transfer-calculator",
+              "features/mcc-lookup",
+              "features/my-cards"
+            ]
+          },
+          {
+            "group": "Supported Banks & Cards",
+            "pages": [
+              "banks/india",
+              "banks/singapore"
+            ]
+          },
+          {
+            "group": "Setup & Configuration",
+            "pages": [
+              "setup/installation",
+              "setup/firebase-setup",
+              "setup/environment-variables"
+            ]
+          },
+          {
+            "group": "Contributing",
+            "pages": [
+              "contributing/overview",
+              "contributing/reporting-missing-cards"
+            ]
+          },
+          {
+            "group": "Legal",
+            "pages": [
+              "legal/privacy-policy",
+              "legal/terms-of-service",
+              "legal/license"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": ["api/overview", "api/authentication"]
+          },
+          {
+            "group": "Endpoints",
+            "pages": [
+              "api/endpoints/banks",
+              "api/endpoints/cards",
+              "api/endpoints/calculate-rewards",
+              "api/endpoints/best-card",
+              "api/endpoints/transfer-partners",
+              "api/endpoints/mcc",
+              "api/endpoints/user-cards"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Reward calculator for specific spend amounts and Merchant Category Codes (MCCs)",
+    "Best card finder to compare multiple cards across a transaction",
+    "Transfer partner calculator for airline/hotel loyalty points",
+    "MCC lookup tool to identify merchant category codes",
+    "My Cards portfolio to track and manage owned credit cards",
+    "Multi-region support for India and Singapore",
+    "Firebase Authentication with Google Sign-in and anonymous mode",
+    "Dark mode and responsive design",
+    "Mobile apps available on iOS and Android",
+    "Rate-limited API with usage tracking"
+  ],
+  "publicApiSurface": [
+    "GET /v4/bank?country={region}",
+    "GET /v4/card?bank={bank}&country={region}",
+    "GET /v4/mcc?search={query}",
+    "GET /v4/cardQuestions?bank={bank}&card={card}",
+    "POST /v4/calculateRewards",
+    "POST /v4/bestCardQuestions",
+    "POST /v4/calculateBestCard",
+    "POST /v4/transfer",
+    "GET /v4/card/detail?bank={bank}&card={card}&country={region}",
+    "GET /v4/goals?bank={bank}&card={card}&country={region}",
+    "GET /v4/user/cards",
+    "POST /v4/user/cards",
+    "PATCH /v4/user/cards",
+    "DELETE /v4/user/cards",
+    "PUT /v4/user/cards"
+  ]
+}
